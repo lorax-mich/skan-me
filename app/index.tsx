@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#764C29",
     textAlign: "center",
-    marginBottom: 89,
+    marginBottom: 25,
   },
 
   card: {
