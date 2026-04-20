@@ -1,8 +1,26 @@
-import React from "react";
+import React, {useState} from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, Text, View, Image} from "react-native";
 import {Stack} from "expo-router";
+import {CameraView, useCameraPermissions} from "expo-camera";
+import {Ionicons} from "@expo/vector-icons";
 
 export default function Index() {
+  const[scanning, setScanning] = useState(false);
+  const[permission, requestPermission] = useCameraPermissions();
+
+  const handleScanPress = async() => {
+    if (!permission?.granted){
+      await requestPermission();
+    } else{
+      setScanning(true);
+    }
+  };
+
+  const handleBarcodeScanned = ({data}: {data: string}) => {
+    setScanning(false);
+    alert(`Scanned: ${data}`); {/*replace with actual logic*/}
+  }
+
   return (
     <>
        <Stack.Screen options={{ headerShown: false }} />
@@ -29,11 +47,13 @@ export default function Index() {
           </View>
         </View>
 
-        {/* Scan Button*/}
-        <TouchableOpacity style={styles.scanButton} onPress={() => console.log("Scan pressed!")}>
-          <Image source={require("../assets/images/camera.png")} style={styles.scanIcon}/>
-          <Text style={styles.scanButtonText}>Tap to Scan!</Text>
-        </TouchableOpacity>
+        {/* Scan Button */}
+<View style={styles.scanCard}>
+  <TouchableOpacity style={styles.scanButton} onPress={handleScanPress}>
+    <Image source={require("../assets/images/camera.png")} style={styles.scanIcon}/>
+    <Text style={styles.scanButtonText}>Tap to Scan!</Text>
+  </TouchableOpacity>
+</View>
 
 
       </ScrollView>
@@ -89,24 +109,36 @@ const styles = StyleSheet.create({
     color: "#764C29",
   },
 
+  scanCard: {
+    backgroundColor: "#D9CBB3",
+    padding: 0,
+    borderRadius: 16,
+    marginBottom: 15,
+    elevation: 3,
+    alignItems: "stretch",
+  },
+
   scanButton:{
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    backgroundColor: "#4A7C59",
-    padding: 18,
+    backgroundColor: "#4C653B",
+    padding: 5,
     borderRadius: 30,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 16,
     elevation: 3,
+    borderBottomWidth: 5, 
+    borderRightWidth: 3,
+    borderColor: "#8B8589",
   },
 
   scanIcon: {
     width: 24,
     height: 24,
     resizeMode: "contain",
-    tintColor: "FFFFFF",
+    tintColor: "#FFFFFF",
   },
 
   scanButtonText: {
@@ -115,5 +147,19 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 
+  cameraContainer:{
+    flex: 1,
+    backgroundColor: "#000",
+  },
+
+  camera:{
+    flex: 1,
+  },
+
+  closeButton:{
+    position:"absolute",
+    top: 50,
+    right: 20,
+  },
 
 });
